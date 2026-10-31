@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   
   <!-- CDNs for PDF Generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="vendor/html2canvas-1.4.1.min.js"></script>
+  <script src="vendor/jspdf-4.2.1.umd.min.js"></script>
 
   <style>
     /* Premium CSS Variables for Styling */
@@ -2254,6 +2254,7 @@
     });
 
     /* Compile Dynamic Clean Printable Document Summary */
+    function escHtml(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
     function buildPrintSummary() {
       const container = document.getElementById('print-summary-container');
       container.innerHTML = ""; // reset
@@ -2267,9 +2268,9 @@
         </div>
         
         <div class="print-student-info">
-          <div>שם התלמיד/ה: <strong>${state.student.name}</strong></div>
-          <div>תעודת זהות: <strong>${state.student.id}</strong></div>
-          <div>כיתה: <strong>${state.student.class}</strong></div>
+          <div>שם התלמיד/ה: <strong>${escHtml(state.student.name)}</strong></div>
+          <div>תעודת זהות: <strong>${escHtml(state.student.id)}</strong></div>
+          <div>כיתה: <strong>${escHtml(state.student.class)}</strong></div>
         </div>
       `;
 
@@ -2306,8 +2307,8 @@
                   const explanation = state.answers[`${stmt.id}_text`] || "לא נכתב הסבר";
                   html += `
                     <div class="print-sub-question">
-                      <div class="print-sub-label">${stmt.text} - קביעה: <strong>${valRadio}</strong></div>
-                      <div class="print-answer">${explanation}</div>
+                      <div class="print-sub-label">${stmt.text} - קביעה: <strong>${escHtml(valRadio)}</strong></div>
+                      <div class="print-answer">${escHtml(explanation)}</div>
                     </div>
                   `;
                 }
@@ -2320,7 +2321,7 @@
                   html += `
                     <div class="print-sub-question">
                       <div class="print-sub-label">${sub.label}</div>
-                      <div class="print-answer">${textVal}</div>
+                      <div class="print-answer">${escHtml(textVal)}</div>
                     </div>
                   `;
                 }
@@ -2357,9 +2358,9 @@
         state.violations.forEach(v => {
           html += `
             <tr>
-              <td>${v.time}</td>
-              <td style="font-weight: bold; color: #b91c1c;">${v.event}</td>
-              <td>${v.details}</td>
+              <td>${escHtml(v.time)}</td>
+              <td style="font-weight: bold; color: #b91c1c;">${escHtml(v.event)}</td>
+              <td>${escHtml(v.details)}</td>
             </tr>
           `;
         });
